@@ -64,8 +64,25 @@ void select_sort(std::vector<int>& v)
      }
 }
 
+void insertion_sort(std::vector<int>& v)
+{
+     if (v.empty()) return;
+     for (size_t i = 1; i < v.size(); ++i) 
+     {
+          int tmp = v[i];
+          int j = i - 1; 
+          while (j >= 0 && v[j] > tmp)
+          {
+               v[j + 1] = v[j];
+               --j;
+          }
+          v[j + 1] = tmp; 
+     }
+}
+
 int main()
 {
      test_sort(select_sort, "Selection Sort");
+     test_sort(insertion_sort, "Insertion Sort");
      return 0;
 }
