@@ -80,9 +80,66 @@ void insertion_sort(std::vector<int>& v)
      }
 }
 
+namespace merge_srt
+{
+
+void merge(std::vector<int>& v, size_t lo, size_t mid, size_t hi)
+{
+     std::vector<int> tmp;
+     tmp.reserve(hi - lo + 1);
+     size_t i, j;
+     i = lo;
+     j = mid + 1;
+     while (i <= mid && j <= hi )
+     {
+          if (v[i] < v[j])
+          {
+               tmp.push_back(v[i]);
+               ++i;
+          }
+          else
+          {
+               tmp.push_back(v[j]);
+               ++j;
+          }
+     }
+     while (j <= hi)
+     {
+          tmp.push_back(v[j]);
+          ++j;
+     }
+     while (i <= mid)
+     {
+          tmp.push_back(v[i]);
+          ++i;
+     }
+     std::copy(tmp.begin(), tmp.end(), v.begin() + lo);
+
+}
+
+void r_sort(std::vector<int>& v, size_t lo, size_t hi)
+{
+     if (hi > lo)
+     {
+          size_t mid = (lo + hi) / 2;
+          r_sort(v, lo, mid);
+          r_sort(v, mid + 1, hi);
+          merge(v, lo, mid, hi);
+     }
+}
+
+void merge_sort(std::vector<int>& v)
+{
+     if (v.empty() || v.size() == 1) return;
+     r_sort(v, 0, v.size() - 1);
+}
+
+}
+
 int main()
 {
      test_sort(select_sort, "Selection Sort");
      test_sort(insertion_sort, "Insertion Sort");
+     test_sort(merge_srt::merge_sort, "Merge Sort");
      return 0;
 }
