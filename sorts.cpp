@@ -136,10 +136,65 @@ void merge_sort(std::vector<int>& v)
 
 }
 
+namespace quick_sort
+{
+
+size_t partition(std::vector<int>& v, size_t lo, size_t hi)
+{
+     int pivot = v[lo];
+     size_t left = lo + 1;
+     size_t right = hi;
+     while (true)
+     {
+          while (left <= right && v[left] < pivot)
+          {
+               ++left;
+          }
+          while (left <= right && v[right] > pivot)
+          {
+               --right;
+          }
+          if (left <= right)
+          {
+               std::swap(v[left], v[right]);
+               ++left;
+               --right;
+          }
+          else
+          {
+               break;
+          }
+     }
+     std::swap(v[right], v[lo]);
+     return right;
+}
+
+void qsort(std::vector<int>& vec, size_t lo, size_t hi)
+{
+     if (hi > lo)
+     {
+          size_t location = partition(vec, lo, hi);
+          if (location > lo)
+          {
+               qsort(vec, lo, location - 1);
+          }
+          qsort(vec, location + 1, hi);
+     }
+}
+
+void quick_sort(std::vector<int>& v)
+{
+     if (v.empty() || v.size() == 1) return;
+     qsort(v, 0, v.size() - 1);
+}
+
+}
+
 int main()
 {
      test_sort(select_sort, "Selection Sort");
      test_sort(insertion_sort, "Insertion Sort");
      test_sort(merge_srt::merge_sort, "Merge Sort");
+     test_sort(quick_sort::quick_sort, "Quick Sort");
      return 0;
 }
