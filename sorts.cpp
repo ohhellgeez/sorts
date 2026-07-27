@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <random>
+#include "Timer.hpp"
 
 template <typename SortFunction>
 void test_sort(SortFunction sf, const std::string& sort_name)
@@ -23,7 +24,8 @@ void test_sort(SortFunction sf, const std::string& sort_name)
      test_cases.push_back(random_large);
 
      bool all_passed = true;
-
+     Timer t;
+     t.start();
      for (size_t i = 0; i < test_cases.size(); ++i)
      {
           std::vector<int> original = test_cases[i];
@@ -40,11 +42,12 @@ void test_sort(SortFunction sf, const std::string& sort_name)
                all_passed = false;
           }
      }
-
+     t.stop();
      if (all_passed)
      {
-          std::cout << "[УСПЕХ] " << sort_name << " прошел все тесты!\n";
+          std::cout << "[УСПЕХ] " << sort_name << " прошел все тесты!\n[ВРЕМЯ]: " << t.get_time() << "microsec\n";
      }
+     std::cout << "-----------------------------------------------\n";
 }
 
 void select_sort(std::vector<int>& v)
@@ -190,11 +193,61 @@ void quick_sort(std::vector<int>& v)
 
 }
 
+namespace heap_sort
+{
+
+void sink(std::vector<int>& v, int i, size_t N)
+{    
+     int parent = i;
+     while (2 * parent + 1 < N)
+     {
+          int child = parent * 2 + 1;
+          if (child + 1 < N && v[child] < v[child + 1])
+          {
+               ++child;
+          }
+          if (v[parent] < v[child])
+          {
+               std::swap(v[parent], v[child]);
+               parent = child;
+          }
+          else
+          {
+               break;
+          }
+     }
+}
+
+void heapify(std::vector<int>& v)
+{
+     size_t N = v.size();
+     if (N <= 1) return;
+     for (int i = N / 2 - 1; i >= 0; --i)
+     {
+          sink(v, i, N);
+     }
+}
+
+void heap_sort(std::vector<int>& v)
+{
+     size_t N = v.size();
+     if (N <= 1) return;
+     heapify(v);
+     for (size_t i = N - 1; i > 0; --i)
+     {
+          std::swap(v[0], v[i]);
+          sink(v, 0, i);
+     }
+}
+
+}
+
 int main()
 {
      test_sort(select_sort, "Selection Sort");
      test_sort(insertion_sort, "Insertion Sort");
      test_sort(merge_srt::merge_sort, "Merge Sort");
      test_sort(quick_sort::quick_sort, "Quick Sort");
+     test_sort(heap_sort::heap_sort, "Heap Sort");
      return 0;
 }
